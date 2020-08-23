@@ -82,14 +82,12 @@ def train_12ECG_classifier(input_directory, output_directory):
 
 
     model=create_model()
-    batchsize = 30
+    batchsize = 50
     class_dict= class_dict={0: 63.62172285, 1: 12.54579025, 2: 5.42889102, 3: 60.23758865, 4: 18.14850427, 5: 18.54475983,
     6: 4.03971463, 7: 55.33224756 , 8: 52.26769231, 9: 34.04208417, 10: 7.90828678, 11: 10.91709512, 12: 3.1032152, 13: 7.97886332, 
     14: 66.09727626 , 15: 0.90529738,16: 7.86071263, 17: 100.5147929, 18: 15.11298932, 19: 10.49227918, 20: 43.78092784, 
     21: 7.87528975, 22: 16.91932271, 23: 88.93717277 , 24: 18.81173865, 25: 11.6829436 , 26: 27.75653595 }
 
-    #model.fit_generator(generator=batch_generator(batch_size=batchsize, gen_x=generate_X(input_directory), gen_y=generate_y(y), 
-    #gen_z=generate_z(age,gender), ohe_labels = classes_for_prediction),steps_per_epoch=(len(y)/batchsize), epochs=1)
     
     #HUSK Å LEGGE TIL CLASS_DICT
     def scheduler(epoch, lr):
@@ -103,7 +101,7 @@ def train_12ECG_classifier(input_directory, output_directory):
     lr_schedule = tf.keras.callbacks.LearningRateScheduler(scheduler, verbose=1)
 
     model.fit(x=batch_generator(batch_size=batchsize, gen_x=generate_X(ecg_filenames), gen_y=generate_y(y), gen_z=generate_z(age, gender), ohe_labels=classes_for_prediction), 
-    epochs=7, steps_per_epoch=(len(y)/batchsize), class_weight=class_dict, callbacks=[lr_schedule])
+    epochs=5, steps_per_epoch=(len(y)/batchsize), class_weight=class_dict, callbacks=[lr_schedule])
 
     # Save model.
     print('Saving model...')
